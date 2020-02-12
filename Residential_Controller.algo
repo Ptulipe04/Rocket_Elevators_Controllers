@@ -1,0 +1,111 @@
+//////////////////////////// NOTES ////////////////////////////////////
+Input: READ, OBTAIN, GET 
+Output: PRINT, DISPLAY, SHOW 
+Compute: COMPUTE, CALCULATE, DETERMINE 
+Initialize: SET, INIT 
+Add one: INCREMENT, BUMP
+List manipulation: ADD, REMOVE, PUSH, POP
+//////////////////////////////////////////////////////////////////////
+/// GLOBALS TO THINK ABOUT ( MOVEMENT( speed, position), WEIGHT,) ///
+
+Program DEFAULT(){
+    WHILE GET STATUS;
+        IF STATUS === SERVICE();
+            CALL Program SERVICE()
+        ELSE STATUS === EMERGENCY();
+            CALL Program EMERGENCY()
+        ELSE
+            MOVEMENT = REST 
+            CALL Program STANDBY();
+        ENDIF
+    ENDWHILE 
+}END
+
+Program STANDBY(){
+    
+    WHILE MOVEMENT = REST 
+        IF Current_Floor < x THEN
+            IF CallButtonUP(x) or CallButtonDOWN(x) = pressed THEN
+                CALL Program MOVEUP()
+            ENDIF
+        ELSE Current_Floor > x THEN
+            IF CallButtonUP(x) or CallButtonDOWN(x) = pressed THEN
+                CALL Program MOVEDOWN()
+            ENDIF
+        ENDIF
+    ENDWHILE
+    
+    IF x < 10 THEN
+        x = Current_Floor + 1
+    ELSE x = 10 THEN
+        x = Top Floor
+    ENDIF
+}END
+
+Program MOVEUP(){
+    IF Current_Floor = 10 THEN
+        CALL STANDBY()
+    ENDIF
+    IF Current_Floor < 10 THEN
+        MOVEMENT = MOVE 
+        FOR each floor moved up Current_Floor = Current_Floor + 1
+            Full speed to Floor[x-1]
+            Slow speed to Floor[x] 
+            Stop speed to Floor[x]
+            IF Current_Floor is not at exact Floor[x] THEN
+                Slow speed to Floor[x]
+            ENDIF
+            
+            MOVEMENT = REST
+            CALL Program (FRB)Floor_Request_Buttons()
+    ENDIF
+
+}END
+
+Program MOVEDOWN(){
+    IF Current_Floor = 1 THEN
+        CALL STANDBY()
+    ENDIF
+    IF Current_Floor > 1 THEN
+        MOVEMENT = MOVE 
+        FOR each floor moved down Current_Floor = Current_Floor - 1
+            Full speed to Floor[x-1]
+            Slow speed to Floor[x] 
+            Stop speed to Floor[x]
+            IF Current_Floor is not at exact Floor[x] THEN
+                Slow speed to Floor[x]
+            ENDIF
+            MOVEMENT = REST
+            CALL Program (FRB)Floor_Request_Buttons()
+    ENDIF
+
+}END
+
+Program (FRB)Floor_Request_Buttons(){
+    
+    Open DOORS to CAGE
+    WHILE DOORS_path = BLOCKED 
+        Wait 5 Seconds
+    ENDWHILE
+    IF DOORS_path = UNBLOCKED THEN
+        Close DOORS
+    ENDIF
+    
+    N = Button pressed
+    TIMER = 0
+    WHILE MOVEMENT = REST && TIMER < 35
+        IF BUTTON [ N ] = pressed && N < x THEN
+            CALL Program MOVEDOWN()
+        ENDIF
+        IF BUTTON [ N ] = pressed && N > x THEN
+            CALL Program MOVEUP()
+        ENDIF
+        IF Door_Open button = pressed THEN
+            DOORS will Open
+        ENDIF
+        IF Door_Closed button = pressed && Doors_path = UNBLOCKED THEN
+            DOORS will Close
+        ENDIF
+    ENDWHILE
+    CALL Program STANDBY()
+}END
