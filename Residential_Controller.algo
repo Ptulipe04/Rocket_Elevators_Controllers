@@ -40,7 +40,7 @@ SEQUENCE INIT Data Collection
             Timer - Delay: 3 secs
             Back-Light: on
             Light: off
-        }
+        } 
         
  
 END SEQUENCE
