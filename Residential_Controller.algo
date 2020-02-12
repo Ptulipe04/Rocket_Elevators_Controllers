@@ -1,18 +1,57 @@
--------------------------GET_ELEVATORS------------------------------
-SEQUENCE GET_ELEVATOR()
+-------------------------INITIAL_ELEVATORS------------------------------
+SEQUENCE INIT Data Collection
     
-    SET AC_BATTERY = on 
-    SET STATUS = IDLE
-    SET COLUMN_Number = 1
-        SET CAGE_Number = 1
-    OBTAIN Current_Floor = Floor_number 
-    WAIT for CALL_Buttons() and FLOOR_Request_Buttons()
-    
+    SET AC_BATTERY to on 
+    SET numberof_FLOORS = 10
+    SET Numberof_Cages = 2
+
+    FOR EACH elevator in column
+        SET Elevator {
+            Status: IDLE
+            State: STOPPED
+            Position: none            
+            Speed: 0
+            Capacity: empty
+            ListofRequests: empty
+            Doors: Closed
+        }        
+        SET CallButtonUP {
+            Floor: 1
+            Back-Light: on
+            Light: off
+        }
+        SET CallButtonDOWN {
+            Floor: 2
+            Back-Light: on
+            Light: off
+        }        
+        SET FloorRequestButton {
+            Back-Light: on
+            Light: off
+        }
+        SET FloorRequestButton OpenDoors{
+            Doors: Closed
+            Timer - Instant: 0 secs
+            Back-Light: on
+            Light: off
+        }
+        SET FloorRequestButton ClosedDoors{
+            Doors: Open
+            Timer - Delay: 3 secs
+            Back-Light: on
+            Light: off
+        }
+        
+ 
+END SEQUENCE
+
+SEQUENCE GetCallButton
+
+  
+
    
 -------------------------/GET_ELEVATORS------------------------------
 
--------------------------CALL_BUTTON------------------------------
+-------------------------CONTROLLER------------------------------
 
-
-
--------------------------/CALL_BUTTON------------------------------
+IF callbutton IS pressed
