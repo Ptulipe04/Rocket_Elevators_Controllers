@@ -121,21 +121,8 @@ SEQUENCE Floor_Selection
         WHILE RequestButton is Pressed DO
             Floor_Select = Z
             SET Z = [1-10]
-            IF          
-
-
-
-
-
+            IF 
 '---------------------------/Floor_Selection----------------------------'
-
-
-
-
-
-
-
-
 
 '*******************************CONTROLLER**********************************'
 '******************************/CONTROLLER**********************************'
