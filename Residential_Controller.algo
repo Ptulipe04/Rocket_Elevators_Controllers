@@ -34,10 +34,12 @@ SEQUENCE INIT
             FloorLIST = Empty
         }
         SET RequestButton_OpenDoor{
-            Doors: Closed            
+            Doors: Closed
+            Button Light: On            
         }
         SET RequestButton_CloseDoor{
             Doors: Open
+            Button Light: On
             Timer: 3 secs
         }
         
@@ -71,16 +73,18 @@ SEQUENCE CallButton.Request
             GET CallButton.Floor            
             INIT Button Light = On
             INIT Button Light Timer = 3 secs
-                IF Button Light Timer = 0 s THEN
-                SET Button Light =  Off
+                IF Button Light Timer = 0 s AND CallButton is not Pressed THEN
+                    SET Button Light =  Off
                 ENDIF
         ENDIF
         IF CallButton.Floor < 10 AND CallButton = X THEN
                 SET X = CallButton.Floor
-                INIT Elevator.Direction = UP                        
+                INIT Elevator.Direction = UP 
+                RETURN Elevator                       
         ELSE IF CallButton.Floor > 1 AND CallButton = Y THEN
                 SET Y = CallButton.Floor
-                INIT Elevator.Direction = DOWN            
+                INIT Elevator.Direction = DOWN 
+                RETURN ELEVATOR           
         ENDIF        
     ENDWHILE
     SET State = CALLED
@@ -90,34 +94,35 @@ END SEQUENCE
 '---------------------------CALL BUTTON Move ELEVATOR------------------------------'
 SEQUENCE Move_ELEVATOR
     WHILE State = CALLED DO
-        IF FLOOR = CallButton.Floor THEN
+        IF Elevator.FLOOR = CallButton.Floor THEN
             SET State = STOPPED
             INIT Doors = Open
         
-        ELSE IF FLOOR < CallButton.Floor THEN
+        ELSE IF Elevator.FLOOR < CallButton.Floor THEN
             SET State = CALLED          
             FOR FLOOR = CallButton.Floor - 1 
                     INIT Speed = MAX
             ENDFOR
-            FOR FLOOR = CallButton.Floor 
+            FOR Elevator.FLOOR = CallButton.Floor 
                     INIT Speed = SLOW
             ENDFOR
             FOR when State is STOPPED                    
                     INIT Doors = Open
+                    SET RequestLISTS = Empty
             ENDFOR
                     
         
-        ELSE IF FLOOR > CallButton.Floor THEN
+        ELSE IF Elevator.FLOOR > CallButton.Floor THEN
             SET State = CALLED 
-            FOR FLOOR = CallButton.Floor + 1 
+            FOR Elevator.FLOOR = CallButton.Floor + 1 
                     INIT Speed = MAX
             ENDFOR
-            FOR FLOOR = CallButton.Floor 
+            FOR Elevator.FLOOR = CallButton.Floor 
                     INIT Speed = SLOW
             ENDFOR
             FOR State is STOPPED 
                     INIT Doors = Open
-                    
+                    SET RequestLISTS = Empty                   
             ENDFOR
         ENDIF
     ENDWHILE
