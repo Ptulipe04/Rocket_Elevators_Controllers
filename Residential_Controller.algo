@@ -1,57 +1,141 @@
--------------------------INITIAL_ELEVATORS------------------------------
-SEQUENCE INIT Data Collection
+'******************************INITAL_ELEVATORS*****************************'
+SEQUENCE INIT 
     
-    SET AC_BATTERY to on 
+    SET BATTERY to on 
     SET numberof_FLOORS = 10
     SET Numberof_Cages = 2
 
-    FOR EACH elevator in column
+    FOR EACH Elevator in column
         SET Elevator {
             Status: IDLE
             State: STOPPED
-            Position: none            
-            Speed: 0
-            Capacity: empty
-            ListofRequests: empty
-            Doors: Closed
+            Lights: On
+            Position: 1
+            Direction: Empty            
+            Speed: 0 %
+            Timer: 0 secs
+            RequestsLIST: Empty
+            Doors: Closed 
+            Sensor: UNBLOCKED
+       
         }        
-        SET CallButtonUP {
-            Floor: 1
-            Back-Light: on
-            Light: off
+        SET CallButton {
+            CallButton.UP: X
+            CallButton.DOWN: Y
+            CallButton(Position): 1
+            Button Backlight: On
+            Button Light: Off
+            Button Light Timer: 0 secs
         }
-        SET CallButtonDOWN {
-            Floor: 2
-            Back-Light: on
-            Light: off
-        }        
-        SET FloorRequestButton {
-            Back-Light: on
-            Light: off
+        SET RequestButton {
+            Floor_Select: Z
+            Button Backlight: On
+            Button Light: Off
+            Button Light Timer: 0 secs
+            DestinationLIST = Empty
         }
-        SET FloorRequestButton OpenDoors{
+        SET RequestButton_OpenDoor{
             Doors: Closed
-            Timer - Instant: 0 secs
-            Back-Light: on
-            Light: off
+            Timer: 0 secs
         }
-        SET FloorRequestButton ClosedDoors{
+        SET RequestButton_ClosedDoor{
             Doors: Open
-            Timer - Delay: 3 secs
-            Back-Light: on
-            Light: off
-        } 
+            Timer: 3 secs
+        }
         
- 
+    ENDFOR
+
 END SEQUENCE
+'******************************/INITAL_ELEVATORS****************************'
 
-SEQUENCE GetCallButton
 
-  
+'---------------------------CallButton_Request-------------------------'
+SEQUENCE CallButton_Request
+    WHILE Elevator.Status = IDLE DO
+        IF CallButton UP or CallButton DOWN is Pressed THEN
+            SET Elevator.RequestsLIST = 1
+            INIT CallButton.Button Light = On
+            INIT CallButton.Button Light Timer = 3 secs
+                IF CallButton.Button Light Timer = 0 s THEN
+                SET CallButton.Button Light =  Off
+                ENDIF
+            GET CallButton(Position)
+        ENDIF
+        IF CallButton(Position) < 10 AND CallButton = X THEN
+                SET X = CallButton(Position)
+                INIT Direction = UP                        
+        ELSE IF CallButton(Position) > 1 AND CallButton = Y THEN
+                SET Y = CallButton(Position)
+                INIT Direction = DOWN            
+        ENDIF        
+    ENDWHILE
+    SET State = CALLED
+END SEQUENCE
+'--------------------------/CallButton_Request-------------------------'
 
-   
--------------------------/GET_ELEVATORS------------------------------
+'---------------------------Move_ELEVATOR------------------------------'
+SEQUENCE Move_ELEVATOR
+    WHILE State = CALLED DO
+        IF Elevator.Position = CallButton(Position) THEN
+            SET State = STOPPED
+            INIT Elevator.Doors = Open
+            SET Elevator.RequestsLIST = Empty
+        
+        ELSE IF Elevator.Position < CallButton(Position) THEN
+            SET State = CALLED          
+            FOR Elevator.Position = CallButton(Position) - 1 
+                    INIT Elevator.Speed = 100 %
+            FOR Elevator.Position = CallButton(Position) 
+                    INIT Elevator.Speed = 10 %
+            FOR when State is STOPPED 
+                    INIT Elevator.Speed = 0 %
+                    INIT Elevator.Doors = Open
+                    SET Elevator.RequestsLIST = Empty
+        
+        ELSE IF Position > CallButton(Position) THEN
+            SET State = CALLED            
+            FOR Elevator.Position = CallButton(Position) + 1 
+                    INIT Elevator.Speed = 100 %
+            FOR Elevator.Position = CallButton(Position) 
+                    INIT Elevator.Speed = 10 %
+            FOR State is STOPPED 
+                    INIT Elevator.Speed = 0 %
+                    INIT Elevator.Doors = Open
+                    SET Elevator.RequestsLIST = Empty
+        ENDIF
+    ENDWHILE
+ENDSEQUENCE
+'---------------------------/Move_ELEVATOR------------------------------'
 
--------------------------CONTROLLER------------------------------
+'----------------------------Floor_Selection----------------------------'
+SEQUENCE Floor_Selection
+    WHILE State is STOPPED AND Elevator.Doors is Open DO
+        IF RequestButton is Pressed THEN 
+            SET RequestButton.DestinationLIST = 1
+            INIT Button Light = On
+            SET Button Light Timer = 4 secs
+                IF RequestButton.Button Light Timer = 0 s THEN
+                SET RequestButton.Button Light =  Off
+                ENDIF
+        ENDIF
+        WHILE RequestButton is Pressed DO
+            Floor_Select = Z
+            SET Z = [1-10]
+            IF          
 
-IF callbutton IS pressed
+
+
+
+
+'---------------------------/Floor_Selection----------------------------'
+
+
+
+
+
+
+
+
+
+'*******************************CONTROLLER**********************************'
+'******************************/CONTROLLER**********************************'
