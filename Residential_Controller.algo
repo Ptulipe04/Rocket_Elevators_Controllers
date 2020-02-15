@@ -99,7 +99,15 @@ SEQUENCE Move_ELEVATOR
             INIT Doors = Open
         
         ELSE IF Elevator.FLOOR < CallButton.Floor THEN
-            SET State = CALLED          
+            SET State = CALLED
+            SET Elevator.Doors = CLOSED
+            READ Elevator.Sensor
+            IF Elevator.Sensor = Blocked THEN
+                SET Elevator.Door Timer = 5 secs
+                INIT Doors:OPEN
+            ELSE
+                INIT Doors:CLOSED
+            ENDIF          
             FOR FLOOR = CallButton.Floor - 1 
                     INIT Speed = MAX
             ENDFOR
@@ -113,7 +121,15 @@ SEQUENCE Move_ELEVATOR
                     
         
         ELSE IF Elevator.FLOOR > CallButton.Floor THEN
-            SET State = CALLED 
+            SET State = CALLED
+                        SET Elevator.Doors = CLOSED
+            READ Elevator.Sensor
+            IF Elevator.Sensor = Blocked THEN
+                SET Elevator.Door Timer = 5 secs
+                INIT Doors:OPEN
+            ELSE
+                INIT Doors:CLOSED
+            ENDIF 
             FOR Elevator.FLOOR = CallButton.Floor + 1 
                     INIT Speed = MAX
             ENDFOR
@@ -195,10 +211,14 @@ FOR EACH RequestLIST IN RequestLISTS
 END FOR
 END SEQUENCE
 
-
-
-
-
-   
+SEQUENCE ShortestFloorRequestLISTS
+GET FloorLIST
+FOR EACH INCREMENT IN FloorLIST
+    IF FloorLIST.Length1 > FloorLIST.Length2 THEN
+        RETURN Elevator
+    ELSE RETURN Elevator
+    END IF
+END FOR
+END SEQUENCE  
     
 '******************************/CONTROLLER**********************************'
