@@ -2,49 +2,55 @@
 SEQUENCE INIT 
     
     SET BATTERY to on 
-    SET number of FLOORS = 10
-    SET NUmber of COLUMNS = 1
-    SET Number of ELEVATORS = 2
+    SET Number of FLOORS = 66
+    SET Number of BASEMENTS = 6
+    SET Number of COLUMN = 4
+    SET Number of ELEVATORS = 12
     
-
-    FOR EACH Elevator in COLUMNS
-        SET Elevator {
-            Status: IDLE
-            State: STOPPED
-            Lights: On
-            FLOOR: 1
-            Direction: Empty            
-            Speed: SLOW
-            RequestLISTS: Empty
-            Doors: Closed
-            Door Timer: 0 secs 
-            Sensor : UNBLOCKED      
-        }        
-        SET CallButton {
-            CallButton.UP: X
-            CallButton.DOWN: Y
-            Floor: [1 - 10]
-            Button Light: Off
-            Button Light Timer: 0 secs
-        }
-        SET RequestButton {
-            Floor_Select: [1 - 10]
-            Button Light: Off
-            Button Light Timer: 0 secs
-            FloorLIST = Empty
-        }
-        SET RequestButton_OpenDoor{
-            Doors: Closed
-            Button Light: On            
-        }
-        SET RequestButton_CloseDoor{
-            Doors: Open
-            Button Light: On
-            Timer: 3 secs
-        }
-        
+    FOR EACH COLUMN
+        SET COLUMNLIST = [1-4]
+        SET 
+        FOR EACH Elevator in COLUMN
+            SET Elevator {
+                Status: IDLE
+                State: STOPPED
+                Lights: On
+                FLOOR: [1-66]
+                SubFLoor:[1-6]
+                Direction: Empty            
+                Speed: SLOW
+                RequestLISTS: Empty
+                Doors: Closed
+                Door Timer: 0 secs 
+                Sensor : UNBLOCKED      
+            }        
+            SET CallButton {
+                CallButton.UP: X
+                CallButton.DOWN: Y
+                Floor: [1 - 66]
+                SubFLoor:[1-6]
+                Button Light: Off
+                Button Light Timer: 0 secs
+            }
+            SET RequestButton {
+                Floor_Select: [1 - 66]
+                SubFLoor_Select: [1-6]
+                Button Light: Off
+                Button Light Timer: 0 secs
+                FloorLIST = Empty
+            }
+            SET RequestButton_OpenDoor{
+                Doors: Closed
+                Button Light: On            
+            }
+            SET RequestButton_CloseDoor{
+                Doors: Open
+                Button Light: On
+                Timer: 3 secs
+            }
+            
+        ENDFOR
     ENDFOR
-
 END SEQUENCE
 '******************************/INITAL ELEVATORS****************************'
 SEQUENCE Door.OPEN
@@ -77,7 +83,7 @@ SEQUENCE CallButton.Request
                     SET Button Light =  Off
                 ENDIF
         ENDIF
-        IF CallButton.Floor < 10 AND CallButton = X THEN
+        IF CallButton.Floor < 66 AND CallButton = X THEN
                 SET X = CallButton.Floor
                 INIT Elevator.Direction = UP 
                 RETURN Elevator                       
@@ -99,7 +105,15 @@ SEQUENCE Move_ELEVATOR
             INIT Doors = Open
         
         ELSE IF Elevator.FLOOR < CallButton.Floor THEN
-            SET State = CALLED          
+            SET State = CALLED
+            SET Elevator.Doors = CLOSED
+            READ Elevator.Sensor
+            IF Elevator.Sensor = Blocked THEN
+                SET Elevator.Door Timer = 5 secs
+                INIT Doors:OPEN
+            ELSE
+                INIT Doors:CLOSED
+            ENDIF          
             FOR FLOOR = CallButton.Floor - 1 
                     INIT Speed = MAX
             ENDFOR
@@ -113,7 +127,15 @@ SEQUENCE Move_ELEVATOR
                     
         
         ELSE IF Elevator.FLOOR > CallButton.Floor THEN
-            SET State = CALLED 
+            SET State = CALLED
+                        SET Elevator.Doors = CLOSED
+            READ Elevator.Sensor
+            IF Elevator.Sensor = Blocked THEN
+                SET Elevator.Door Timer = 5 secs
+                INIT Doors:OPEN
+            ELSE
+                INIT Doors:CLOSED
+            ENDIF 
             FOR Elevator.FLOOR = CallButton.Floor + 1 
                     INIT Speed = MAX
             ENDFOR
@@ -150,7 +172,7 @@ SEQUENCE FloorSelection
             SET Floor_Select = A
             WHILE Floor_Select = A
                 SET Elevator.Direction = A
-                    FOR EACH Elevator in COLUMNS
+                    FOR EACH Elevator in COLUMN
                         OBTAIN Elevator.FLOOR
                     ENDFOR
                 IF Elevator.Floor = A AND State = STOPPED THEN
@@ -167,7 +189,7 @@ SEQUENCE FloorSelection
             SET Floor_Select = B
             WHILE Floor_Select = B
                 SET Elevator.Direction = B
-                    FOR EACH Elevator in COLUMNS
+                    FOR EACH Elevator in COLUMN
                         OBTAIN Elevator.FLOOR
                     ENDFOR
                 IF Elevator.Floor = B AND State = STOPPED THEN
@@ -195,10 +217,14 @@ FOR EACH RequestLIST IN RequestLISTS
 END FOR
 END SEQUENCE
 
-
-
-
-
-   
+SEQUENCE ShortestFloorRequestLISTS
+GET FloorLIST
+FOR EACH INCREMENT IN FloorLIST
+    IF FloorLIST.Length1 > FloorLIST.Length2 THEN
+        RETURN Elevator
+    ELSE RETURN Elevator
+    END IF
+END FOR
+END SEQUENCE  
     
 '******************************/CONTROLLER**********************************'
