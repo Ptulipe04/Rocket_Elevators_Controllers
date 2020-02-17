@@ -9,7 +9,7 @@ SEQUENCE INIT
     
     FOR EACH COLUMN
         SET COLUMNLIST = [1-4]
-        SET 
+        
         FOR EACH Elevator in COLUMN
             SET Elevator {
                 Status: IDLE
