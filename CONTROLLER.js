@@ -19,24 +19,24 @@ var INIT  = function(){
             Doors:"Closed",
             DoorTimer:"0 secs ",
             Sensor:"UNBLOCKED ",     
-        }
+        };
         var CallButton = {
             UP:"X",
             DOWN:"Y",
             Floor:"[1 - 10]",
             ButtonLight:"Off",
             ButtonLightTimer:"0 secs"
-        }
+        };
         var RequestButton = {
             FloorSelect:"[1 - 10]",
             ButtonLight:"Off",
             ButtonLightTimer:"0 secs",
             FloorLIST:"Empty"
-        }
+        };
         var RequestButton_OpenDoor = {
             Doors:"Closed",
             ButtonLight:"On"            
-        }
+        };
         var RequestButton_CloseDoor = {
             Doors:"Open",
             ButtonLight:"On",
@@ -45,52 +45,45 @@ var INIT  = function(){
     };
 };
 //******************************/INITAL ELEVATORS****************************//
-var OpenDoors = function{
+var OpenDoors = function(){
     if (RequestButton_OpenDoor = "Pressed"){
         RequestButton_OpenDoor.Doors = "Open"
     }    
 };
 
-var CloseDoors = function{
-    if (RequestButton_CloseDoor = "Pressed" ){
-        Elevator.Sensor = "UNBLOCKED";
-           }
-    
-        if Elevator.Sensor = Blocked THEN
-        SET Elevator.Door Timer = 5 secs
-        INIT Doors:OPEN
-        ELSE
-        INIT Doors:CLOSED
-        ENDIF
-ENDIF
-
-
+var CloseDoors = function(){
+    if ((RequestButton_CloseDoor = "Pressed") && (Elevator.Sensor = "UNBLOCKED")){
+        Doors = "Close"
+    }
+    else if (Elevator.Sensor = "BLOCKED"){    
+        Elevator.DoorTimer = "5 secs",
+        Doors = "OPEN"
+    }
 };
-
 //---------------------------CallButton Request-------------------------//
-SEQUENCE CallButton.Request
+function CallButton(){
     WHILE Status = IDLE DO
-        IF CallButton UP or CallButton DOWN is Pressed THEN
-            SET RequestLISTS = 1
-            GET CallButton.Floor            
-            INIT Button Light = On
-            INIT Button Light Timer = 3 secs
-                IF Button Light Timer = 0 s AND CallButton is not Pressed THEN
-                    SET Button Light =  Off
-                ENDIF
-        ENDIF
-        IF CallButton.Floor < 10 AND CallButton = X THEN
-                SET X = CallButton.Floor
-                INIT Elevator.Direction = UP 
-                RETURN Elevator                       
-        ELSE IF CallButton.Floor > 1 AND CallButton = Y THEN
-                SET Y = CallButton.Floor
-                INIT Elevator.Direction = DOWN 
-                RETURN ELEVATOR           
-        ENDIF        
-    ENDWHILE
-    SET State = CALLED
-END SEQUENCE
+    IF CallButton UP or CallButton DOWN is Pressed THEN
+        SET RequestLISTS = 1
+        GET CallButton.Floor            
+        INIT Button Light = On
+        INIT Button Light Timer = 3 secs
+            IF Button Light Timer = 0 s AND CallButton is not Pressed THEN
+                SET Button Light =  Off
+            ENDIF
+    ENDIF
+    IF CallButton.Floor < 10 AND CallButton = X THEN
+            SET X = CallButton.Floor
+            INIT Elevator.Direction = UP 
+            RETURN Elevator                       
+    ELSE IF CallButton.Floor > 1 AND CallButton = Y THEN
+            SET Y = CallButton.Floor
+            INIT Elevator.Direction = DOWN 
+            RETURN ELEVATOR           
+    ENDIF        
+ENDWHILE
+SET State = CALLED
+};
 //--------------------------/CallButton Request-------------------------//
 
 //---------------------------CALL BUTTON Move ELEVATOR------------------------------//
