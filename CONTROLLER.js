@@ -7,7 +7,7 @@ var INIT  = function(){
     var numberofELEVATORS = 2
     
 
-    FOR (numberofELEVATORS){
+    FOR (numberofELEVATORS);{
         var Elevator = {
             Status:"IDLE",
             State:"STOPPED",
@@ -46,43 +46,44 @@ var INIT  = function(){
 };
 //******************************/INITAL ELEVATORS****************************//
 var OpenDoors = function(){
-    if (RequestButton_OpenDoor = "Pressed"){
-        RequestButton_OpenDoor.Doors = "Open"
+    if ($(RequestButton_OpenDoor) = "Pressed"){
+        $(Elevator.Doors) = "Open"
     }    
 };
-
 var CloseDoors = function(){
-    if ((RequestButton_CloseDoor = "Pressed") && (Elevator.Sensor = "UNBLOCKED")){
-        Doors = "Close"
+    if (($(RequestButton_CloseDoor) = "Pressed") && ($(Elevator.Sensor) = "UNBLOCKED")){
+        $(Elevator.Doors) = "Close"
     }
     else if (Elevator.Sensor = "BLOCKED"){    
-        Elevator.DoorTimer = "5 secs",
-        Doors = "OPEN"
+        $(Elevator.DoorTimer) = "5 secs"
+        $(Elevator.Doors) = "OPEN"
     }
 };
 //---------------------------CallButton Request-------------------------//
 function CallButton(){
-    WHILE Status = IDLE DO
-    IF CallButton UP or CallButton DOWN is Pressed THEN
-        SET RequestLISTS = 1
-        GET CallButton.Floor            
-        INIT Button Light = On
-        INIT Button Light Timer = 3 secs
-            IF Button Light Timer = 0 s AND CallButton is not Pressed THEN
-                SET Button Light =  Off
-            ENDIF
-    ENDIF
-    IF CallButton.Floor < 10 AND CallButton = X THEN
-            SET X = CallButton.Floor
-            INIT Elevator.Direction = UP 
-            RETURN Elevator                       
-    ELSE IF CallButton.Floor > 1 AND CallButton = Y THEN
-            SET Y = CallButton.Floor
-            INIT Elevator.Direction = DOWN 
-            RETURN ELEVATOR           
-    ENDIF        
-ENDWHILE
-SET State = CALLED
+    var current_floor = $(CallButton.Floor)
+
+    while (Status = "IDLE") {
+        if (($(CallButton.UP) = "Pressed" ) || ($(CallButton.DOWN) = "Pressed")){
+            $(Elevator.RequestLISTS) = 1
+            $(CallButton.ButtonLight) = "On"
+            $(CallButton.ButtonLightTimer) = "3secs"
+            if ($(Callbutton.ButtonLightTimer = 0)){
+                $(CallButton.ButtonLight) = "Off"
+            };
+        }
+        if ((current_floor < 10) && ($(CallButton) = X )){
+            X = current_floor
+            $(Elevator.Direction) = UP 
+            // RETURN Elevator 
+        }                      
+        else if ((current_floor > 1) && ($(CallButton) = Y )){
+            Y = current_Floor
+            $(Elevator.Direction) = DOWN 
+            // RETURN ELEVATOR  
+        };
+    };
+    $(Elevator.State) = "Called"
 };
 //--------------------------/CallButton Request-------------------------//
 
