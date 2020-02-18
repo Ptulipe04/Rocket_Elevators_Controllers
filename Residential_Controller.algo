@@ -122,7 +122,7 @@ SEQUENCE Move_ELEVATOR
         
         ELSE IF Elevator.FLOOR > CallButton.Floor THEN
             SET State = CALLED
-                        SET Elevator.Doors = CLOSED
+            SET Elevator.Doors = CLOSED
             READ Elevator.Sensor
             IF Elevator.Sensor = Blocked THEN
                 SET Elevator.Door Timer = 5 secs

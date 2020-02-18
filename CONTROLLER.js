@@ -60,7 +60,7 @@ var CloseDoors = function(){
     }
 };
 //---------------------------CallButton Request-------------------------//
-function CallButton(){
+var CallButton = function(){
     var current_floor = $(CallButton.Floor)
 
     while (Status = "IDLE") {
@@ -88,61 +88,64 @@ function CallButton(){
 //--------------------------/CallButton Request-------------------------//
 
 //---------------------------CALL BUTTON Move ELEVATOR------------------------------//
-SEQUENCE Move_ELEVATOR
-    WHILE State = CALLED DO
-        IF Elevator.FLOOR = CallButton.Floor THEN
-            SET State = STOPPED
-            INIT Doors = Open
-        
-        ELSE IF Elevator.FLOOR < CallButton.Floor THEN
-            SET State = CALLED
-            SET Elevator.Doors = CLOSED
-            READ Elevator.Sensor
-            IF Elevator.Sensor = Blocked THEN
-                SET Elevator.Door Timer = 5 secs
-                INIT Doors:OPEN
-            ELSE
-                INIT Doors:CLOSED
-            ENDIF          
-            FOR FLOOR = CallButton.Floor - 1 
-                    INIT Speed = MAX
-            ENDFOR
-            FOR Elevator.FLOOR = CallButton.Floor 
-                    INIT Speed = SLOW
-            ENDFOR
-            FOR when State is STOPPED                    
-                    INIT Doors = Open
-                    SET RequestLISTS = Empty
-            ENDFOR
-                    
-        
-        ELSE IF Elevator.FLOOR > CallButton.Floor THEN
-            SET State = CALLED
-                        SET Elevator.Doors = CLOSED
-            READ Elevator.Sensor
-            IF Elevator.Sensor = Blocked THEN
-                SET Elevator.Door Timer = 5 secs
-                INIT Doors:OPEN
-            ELSE
-                INIT Doors:CLOSED
-            ENDIF 
-            FOR Elevator.FLOOR = CallButton.Floor + 1 
-                    INIT Speed = MAX
-            ENDFOR
-            FOR Elevator.FLOOR = CallButton.Floor 
-                    INIT Speed = SLOW
-            ENDFOR
-            FOR State is STOPPED 
-                    INIT Doors = Open
-                    SET RequestLISTS = Empty                   
-            ENDFOR
-        ENDIF
-    ENDWHILE
-END SEQUENCE
+var Move_ELEVATOR = function(){
+    var current_floor = $(CallButton.Floor) 
+    while ($(Elevator.State) = "Called"){
+        if (($(Elevator.FLOOR)) = current_floor){
+            $(Elevator.State) = "STOPPED"
+            $(Elevator.Doors) = "Open"
+        }        
+        else if ($(Elevator.FLOOR) < current_floor){
+            $(Elevator.State) = "Called"
+            $(Elevator.Doors) = "Closed"
+            // get Elevator.Sensor
+            if ($(Elevator.Sensor) = "Blocked" ){
+                $(Elevator.DoorTimer) = "5 secs"
+                $(Elevator.Doors) = "Open"
+            }                
+            else{
+                $(Elevator.Doors) = "Closed"
+            }          
+            FOR ($(Elevator.FLOOR) = (current_floor - 1));{
+                $(Elevator.Speed) = "MAX"
+            }
+            FOR ($(Elevator.FLOOR) = current_floor);{
+                $(Elevator.Speed) = "SLOW"
+            }
+            FOR ($(Elevator.State) = STOPPED);{
+                $(Elevator.Doors) = Open
+                    $(Elevator.RequestLISTS) = "Empty"
+            }
+        }         
+        else if ($(Elevator.FLOOR) > current_floor) {
+            $(Elevator.State) = "Called"
+            $(Elevator.Doors) = "Closed"
+            // READ Elevator.Sensor
+            if ($(Elevator.Sensor) = "Blocked" ){
+                $(Elevator.DoorTimer) = "5 secs"
+                $(Elevator.Doors) = "Open"
+            }                
+            else{
+                $(Elevator.Doors) = "Closed"
+            }          
+            FOR ($(Elevator.FLOOR) = (current_floor + 1));{
+                $(Elevator.Speed) = "MAX"
+            }
+            FOR ($(Elevator.FLOOR) = current_floor);{
+                $(Elevator.Speed) = "SLOW"
+            }
+            FOR ($(Elevator.State) = STOPPED);{
+                $(Elevator.Doors) = Open
+                    $(Elevator.RequestLISTS) = "Empty"
+            }
+        };
+    };
+};
+
 //---------------------------/ Call Button Move ELEVATOR------------------------------//
 
 //----------------------------Floor List----------------------------//
-SEQUENCE GETFloorList
+var GETFloorList = function(){
     WHILE State is STOPPED DO
         IF RequestButton is Pressed THEN 
             SET FloorLIST = 1
@@ -152,10 +155,10 @@ SEQUENCE GETFloorList
                 SET Button Light =  Off
                 ENDIF
         ENDIF
-END SEQUENCE        
+};        
 //---------------------------/Floor List----------------------------//
 //--------------------------Floor Selection-------------------------//
-SEQUENCE FloorSelection
+var FloorSelection = function(){
     OBTAIN GETFloorList
     FOR FloorLIST = 1
         IF Floor_Select = [1-5] THEN
@@ -191,30 +194,29 @@ SEQUENCE FloorSelection
                 ENDIF
             ENDWHILE 
         ENDIF            
-    ENDFOR       
-END SEQUENCE
+    ENDFOR   
+};
 //--------------------------Floor Selection-------------------------//
 
 /*******************************CONTROLLER**********************************/
 
-SEQUENCE ShortestRequestsLISTS
-GET RequestLISTS
-FOR EACH RequestLIST IN RequestLISTS
-    IF RequestLIST.Length1 > RequestLIST.Length2 THEN
-        RETURN Elevator
-    ELSE RETURN Elevator
-    END IF
-END FOR
-END SEQUENCE
-
-SEQUENCE ShortestFloorRequestLISTS
-GET FloorLIST
-FOR EACH INCREMENT IN FloorLIST
-    IF FloorLIST.Length1 > FloorLIST.Length2 THEN
-        RETURN Elevator
-    ELSE RETURN Elevator
-    END IF
-END FOR
-END SEQUENCE  
+var ShortestRequestsLISTS = function(){
+    GET RequestLISTS
+    FOR EACH RequestLIST IN RequestLISTS
+        IF RequestLIST.Length1 > RequestLIST.Length2 THEN
+            RETURN Elevator
+        ELSE RETURN Elevator
+        END IF
+    END FOR
+    END SEQUENCE
     
+    SEQUENCE ShortestFloorRequestLISTS
+    GET FloorLIST
+    FOR EACH INCREMENT IN FloorLIST
+        IF FloorLIST.Length1 > FloorLIST.Length2 THEN
+            RETURN Elevator
+        ELSE RETURN Elevator
+        END IF
+    END FOR
+};
 //******************************/CONTROLLER**********************************//
