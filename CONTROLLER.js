@@ -1,5 +1,5 @@
 //******************************INITAL_ELEVATORS*****************************//
-var INIT  = function{
+var INIT  = function(){
     
     var BATTERY = On 
     var numberofFLOORS = 10
@@ -19,31 +19,30 @@ var INIT  = function{
             Doors:"Closed",
             DoorTimer:"0 secs ",
             Sensor:"UNBLOCKED ",     
-        };
+        }
         var CallButton = {
             UP:"X",
             DOWN:"Y",
             Floor:"[1 - 10]",
             ButtonLight:"Off",
             ButtonLightTimer:"0 secs"
-        };
+        }
         var RequestButton = {
             FloorSelect:"[1 - 10]",
             ButtonLight:"Off",
             ButtonLightTimer:"0 secs",
             FloorLIST:"Empty"
-        };
+        }
         var RequestButton_OpenDoor = {
             Doors:"Closed",
             ButtonLight:"On"            
-        };
+        }
         var RequestButton_CloseDoor = {
             Doors:"Open",
             ButtonLight:"On",
             Timer:"3 secs"
         };
     };
-
 };
 //******************************/INITAL ELEVATORS****************************//
 var OpenDoors = function{
