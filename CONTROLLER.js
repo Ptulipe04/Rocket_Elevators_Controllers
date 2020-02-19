@@ -7,7 +7,7 @@ var INIT  = function(){
     var numberofELEVATORS = 2
     
 
-    FOR (numberofELEVATORS);{
+    for (numberofELEVATORS);{
         var Elevator = {
             Status:"IDLE",
             State:"STOPPED",
@@ -21,8 +21,8 @@ var INIT  = function(){
             Sensor:"UNBLOCKED ",     
         };
         var CallButton = {
-            UP:"X",
-            DOWN:"Y",
+            UP: X,
+            DOWN: Y,
             Floor:"[1 - 10]",
             ButtonLight:"Off",
             ButtonLightTimer:"0 secs"
@@ -146,77 +146,83 @@ var Move_ELEVATOR = function(){
 
 //----------------------------Floor List----------------------------//
 var GETFloorList = function(){
-    WHILE State is STOPPED DO
-        IF RequestButton is Pressed THEN 
-            SET FloorLIST = 1
-            INIT Button Light = On
-            SET RequestButton. Button Light Timer = 4 secs
-                IF Button Light Timer = 0 s THEN
-                SET Button Light =  Off
-                ENDIF
-        ENDIF
+    while ($(Elevator.State) = "STOPPED"){
+        if ($(RequestButton) = "Pressed"){
+            $(RequestButton.FloorLIST) = 1
+            $(RequestButton.ButtonLight) = "On"
+            $(RequestButton.ButtonLightTimer) = "4 secs"
+                if ($(ButtonLightTimer) = 0){
+                    $(ButtonLight) =  Off
+                }                
+        }
+    }
 };        
 //---------------------------/Floor List----------------------------//
 //--------------------------Floor Selection-------------------------//
 var FloorSelection = function(){
-    OBTAIN GETFloorList
-    FOR FloorLIST = 1
-        IF Floor_Select = [1-5] THEN
-            SET Floor_Select = A
-            WHILE Floor_Select = A
-                SET Elevator.Direction = A
-                    FOR EACH Elevator in COLUMNS
-                        OBTAIN Elevator.FLOOR
-                    ENDFOR
-                IF Elevator.Floor = A AND State = STOPPED THEN
-                    Call Elevator to A
-                ELSE Elevator.Floor = A AND State = CALLED AND Direction = [UP or DOWN]
-                    RETURN Elevator
-                ELSE Elevator.Floor > A
-                    RETURN Elevator
-                ENDIF
-            ENDWHILE                    
-        ENDIF
-                    
-        ELSE Floor_Select = [6-10] THEN
-            SET Floor_Select = B
-            WHILE Floor_Select = B
-                SET Elevator.Direction = B
-                    FOR EACH Elevator in COLUMNS
-                        OBTAIN Elevator.FLOOR
-                    ENDFOR
-                IF Elevator.Floor = B AND State = STOPPED THEN
-                    Call Elevator to B
-                ELSE Elevator.Floor = B AND State = CALLED AND Direction = [UP or DOWN]
-                    RETURN Elevator
-                ELSE Elevator.Floor < B
-                    RETURN Elevator
-                ENDIF
-            ENDWHILE 
-        ENDIF            
-    ENDFOR   
+    var FloorLIST = $(RequestButton.Floorlist)
+    var Floor_Selection = $(RequestButton.Floor_Select)
+    while (FloorLIST = 1);  {
+        if (Floor_Selection = [1-5]){
+            var Floor_Select = A
+            while (Floor_Select = A){
+                $(Elevator.Direction) = A
+                    for ($(numberofELEVATORS) in COLUMNS);{
+                        getSelection( $(Elevator.FLOOR))
+                    };
+                if (($(Elevator.Floor) = A)  && ($(Elevator.State) = "STOPPED")){
+                    $(Elevator.Direction) = A
+                }
+                else if (($(Elevator.Floor) = A) && ($(Elevator.State) = "CALLED")){
+                     $(Elevator) = RETURN
+                }                    
+                else if (Elevator.Floor > A){
+                    $(Elevator) = Return
+                }
+            }            
+        }                 
+        else if (Floor_Selection = [6-10] ){
+            var Floor_Select = B
+            while (Floor_Select = B){
+                $(Elevator.Direction) = B
+                    for ($(numberofELEVATORS) in COLUMNS);{
+                        getSelection( $(Elevator.FLOOR))
+                    };
+                if (($(Elevator.Floor) = B)  && ($(Elevator.State) = "STOPPED")){
+                    $(Elevator.Direction) = B
+                }
+                else if (($(Elevator.Floor) = B) && ($(Elevator.State) = "CALLED")){
+                    $(Elevator) = RETURN
+                }                    
+                else if (Elevator.Floor < B){
+                    $(Elevator) = Return
+                }
+            }
+        } 
+    };  
 };
 //--------------------------Floor Selection-------------------------//
 
 /*******************************CONTROLLER**********************************/
 
 var ShortestRequestsLISTS = function(){
-    GET RequestLISTS
-    FOR EACH RequestLIST IN RequestLISTS
-        IF RequestLIST.Length1 > RequestLIST.Length2 THEN
-            RETURN Elevator
-        ELSE RETURN Elevator
-        END IF
-    END FOR
-    END SEQUENCE
-    
-    SEQUENCE ShortestFloorRequestLISTS
-    GET FloorLIST
-    FOR EACH INCREMENT IN FloorLIST
-        IF FloorLIST.Length1 > FloorLIST.Length2 THEN
-            RETURN Elevator
-        ELSE RETURN Elevator
-        END IF
-    END FOR
+    getSelection($(Elevator.RequestLISTS)) 
+    for ($(Elevator.RequestLIST) = RequestLISTS){
+        if (RequestLIST.Length1 > RequestLIST.Length2){
+            $(Elevator) = RETURN
+        }
+        else ($(Elevator) = RETURN)
+    }
+};
+
+var ShortestFloorRequestLISTS = function(){
+    getSelection($(RequestButton.FloorLIST).value())
+    var F = 1
+    while ($(RequestButton.FloorLIST).value() = F++){
+        if (FloorLIST.Length1 > FloorLIST.Length2) {
+            $(Elevator) = RETURN
+        }
+        else ($(Elevator) = RETURN)
+    };
 };
 //******************************/CONTROLLER**********************************//
