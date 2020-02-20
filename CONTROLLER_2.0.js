@@ -5,11 +5,11 @@ function Startup (Battery, Floors, Columns, Cages){
     this.Cages = Cages;
 };
 
-function Elevators (Status, State, Lights, Floor, Direction, Speed, CageList, Doors, DoorTimer, Sensor){
+function Elevator (Status, State, Lights, currentFloor, Direction, Speed, CageList, Doors, DoorTimer, Sensor){
     this.Status = Status;
     this.State = State;
     this.Lights = Lights;
-    this.Floor = Floor;
+    this.currentFloor = currentFloor;
     this.Direction = Direction;
     this.Speed = Speed;
     this.CageList = CageList;
@@ -17,3 +17,9 @@ function Elevators (Status, State, Lights, Floor, Direction, Speed, CageList, Do
     this.DoorTimer = DoorTimer;
     this.Sensor = Sensor;
 };
+
+let elevator01 = new Elevator("Idle", "Stopped", "On", null, null, null, 0, "Closed", 0, "UNBLOCKED");
+let elevator02 = new Elevator("Idle", "Stopped", "On", null, null, null, 0, "Closed", 0, "UNBLOCKED");
+
+console.log(elevator02.Status)
+console.log(elevator01.State)
