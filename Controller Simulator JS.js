@@ -50,15 +50,15 @@ class Controller {
 	
 	// ******************************Elevator Selector*****************************//
 	ElevatorSelector(FloorRequest) {
-		let bestDifference = Math.floor(Math.random() * 10) + 1;
+		let DIFFERENCE = Math.floor(Math.random() * 10) + 1;
 		let nearestElevator = null;
 		
 		for (var i = 0; i < this.column.RequestList.length; i++) {
 			var differenceFloor = Math.abs(
 				FloorRequest - this.column.RequestList[i].currentElevatorPosition
 			);
-			if (differenceFloor < bestDifference) {
-				bestDifference = differenceFloor;
+			if (differenceFloor < DIFFERENCE) {
+				DIFFERENCE = differenceFloor;
 				nearestElevator = i;
             }
 		}
