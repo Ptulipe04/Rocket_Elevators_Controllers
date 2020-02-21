@@ -1,10 +1,11 @@
+// ******************************INITALIAZE ELEVATORS*****************************//
 class Controller {
 	constructor(Cages, Floors) {
 		this.Floors = Floors;
 		this.Cages = Cages;
 		this.column = new Column(Floors, Cages);
 	}
-
+	// ******************************Requesting Elevators*****************************//
 	RequestElevator(FloorRequest, Direction) {
 
 		if (FloorRequest > this.Floors || FloorRequest < 0) {
@@ -31,7 +32,9 @@ class Controller {
 			return nearestElevator;
 		}
     }
-    
+	// *****************************/Requesting Elevators*****************************//
+	
+	// ******************************Requesting Floors*****************************//
 	RequestFloor(elevator, FloorRequest) {
         
         if (elevator === undefined) {
@@ -43,7 +46,9 @@ class Controller {
 			elevator.operateElevator();
 		}
     }
-    
+	// *****************************/Requesting Floors*****************************//
+	
+	// ******************************Elevator Selector*****************************//
 	ElevatorSelector(FloorRequest) {
 		let bestDifference = Math.floor(Math.random() * 10) + 1;
 		let nearestElevator = null;
@@ -59,8 +64,12 @@ class Controller {
 		}
 		return this.column.RequestList[nearestElevator];
 	}
+	// *****************************/Elevator Selector*****************************//
 }
+// *****************************/INITALIAZE ELEVATORS*********************************//
 
+
+// ******************************Column Constructor********************************//
 class Column {
 	constructor(Floors, Cages) {
 		this.Floors = Floors;
@@ -76,7 +85,9 @@ class Column {
 		}
 	}
 }
+// *****************************/Column Constructor********************************//
 
+// ****************************** Cages Constructor *******************************//
 class Elevator {
 	constructor(elevator_number, Floors, Direction, Status) {
 		this.elevator_number = elevator_number;
@@ -88,7 +99,7 @@ class Elevator {
         this.currentElevatorPosition = Math.floor(Math.random() * 10) + 1;
         
 	}
-
+	// ****************************** Move Elevator *******************************//
 	operateElevator() {
 		let FloorRequest = this.requestFloorList.shift();
 		if (this.currentElevatorPosition === FloorRequest) {
@@ -119,7 +130,7 @@ class Elevator {
             this.closeDoors();           
 		}
 	}
-
+	// ****************************** Move UP and DOWN *******************************//
 	moveDown() {
         this.Status = "Called";
 		this.Direction = "Down";
@@ -133,7 +144,10 @@ class Elevator {
 		this.currentElevatorPosition ++;
 		pause(1500);
 	}
-
+	// ******************************/Move UP and DOWN *******************************//
+	// ******************************/Move Elevator *******************************//
+	
+	// *********************** Storage of list for movement ***********************//
 	addToList(FloorRequest) {
 		this.requestFloorList.push(FloorRequest);
 		if (this.Direction == "Up") {
@@ -143,13 +157,16 @@ class Elevator {
 			this.requestFloorList.sort().reverse();
 		}
 	}
+	// ***********************/Storage of list for movement ***********************//
 
+	// *********************** Elevator being called else where *******************//
 	InsideRequestButton(FloorRequest) {
 		console.log(
             "Someone on floor number", FloorRequest, "requesting service."," Now sending elevator", this.elevator_number,", which is at floor",this.currentElevatorPosition,".");
 		pause(2500);
     }
-
+		// ***********************/Elevator being called else where *******************//
+	
 	openDoors() {
 		console.log("Opening doors at floor number", this.currentElevatorPosition,".");
         pause(2500);        
@@ -160,7 +177,9 @@ class Elevator {
         pause(2500);        
 	}
 }
+// ****************************** Cages Constructor *******************************//
 
+// ************************ Delay for each sequence *******************************//
 function pause(miliseconds) {
 	var start = new Date().getTime();
 	for (var i = 0; i < 1e7; i++) {
@@ -169,10 +188,13 @@ function pause(miliseconds) {
 		}
 	}
 }
+// ************************/Delay for each sequence *******************************//
 
+// ************************ TEST BENCH for program  *******************************//
 const controller = new Controller(2, 10);
 
 controller.column.RequestList[0].currentElevatorPosition = Math.floor(Math.random() * 4) + 1;
 controller.column.RequestList[1].currentElevatorPosition = Math.floor(Math.random() * 10) + 1;
 RequestElevatorNumber1 = controller.RequestElevator(6, "Up");
 controller.RequestFloor(RequestElevatorNumber1, Math.floor(Math.random() * 10) + 1);
+// ************************ TEST BENCH for program  *******************************//
