@@ -126,8 +126,8 @@ class Elevator {
 			console.log("Elevator", this.elevator_number,"has arrived at floor number",
 				        this.currentElevatorPosition);
 			pause(2500);
-			this.openDoors();
-            this.closeDoors();           
+			this.OpentheDOORS();
+            this.ClosetheDOORS();           
 		}
 	}
 	// ****************************** Move UP and DOWN *******************************//
@@ -167,12 +167,12 @@ class Elevator {
     }
 		// ***********************/Elevator being called else where *******************//
 	
-	openDoors() {
+	OpentheDOORS() {
 		console.log("Opening doors at floor number", this.currentElevatorPosition,".");
         pause(2500);        
     }
      
-	closeDoors() {
+	ClosetheDOORS() {
 		console.log("Closing doors");
         pause(2500);        
 	}
@@ -191,10 +191,12 @@ function pause(miliseconds) {
 // ************************/Delay for each sequence *******************************//
 
 // ************************ TEST BENCH for program  *******************************//
+
 const controller = new Controller(2, 10);
 
 controller.column.RequestList[0].currentElevatorPosition = Math.floor(Math.random() * 4) + 1;
 controller.column.RequestList[1].currentElevatorPosition = Math.floor(Math.random() * 10) + 1;
 RequestElevatorNumber1 = controller.RequestElevator(6, "Up");
 controller.RequestFloor(RequestElevatorNumber1, Math.floor(Math.random() * 10) + 1);
+
 // ************************ TEST BENCH for program  *******************************//
