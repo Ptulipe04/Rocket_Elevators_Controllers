@@ -194,9 +194,9 @@ function pause(miliseconds) {
 
 const controller = new Controller(2, 10);
 
-controller.column.RequestList[0].currentElevatorPosition = Math.floor(Math.random() * 4) + 1;
-controller.column.RequestList[1].currentElevatorPosition = Math.floor(Math.random() * 10) + 1;
-RequestElevatorNumber1 = controller.RequestElevator(6, "Up");
+controller.column.RequestList[0].currentElevatorPosition = Math.floor(Math.random() * 4) + 1;//starting location elevator
+controller.column.RequestList[1].currentElevatorPosition = Math.floor(Math.random() * 10) + 1;//starting location elevator
+RequestElevatorNumber1 = controller.RequestElevator(6, "Up");//request
 controller.RequestFloor(RequestElevatorNumber1, Math.floor(Math.random() * 10) + 1);
 
 // ************************ TEST BENCH for program  *******************************//
